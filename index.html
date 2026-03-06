@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request a Quote · Amar Radio Corporation</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo { font-size: 20px; font-weight: 700; color: #0071E3; text-decoration: none; }
+        .page-title { font-size: 18px; font-weight: 600; color: #0f172a; }
+        .nav-links {
+            display: flex; gap: 24px; list-style: none; margin: 0;
+        }
+        .nav-links a {
+            color: #475569; text-decoration: none; font-size: 14px; font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: #0071E3; }
+
+        /* --- Hero with PCB / Automation background + dark overlay --- */
+        .quote-hero {
+            position: relative;
+            background-image: url('/chip.jpg'); 
+            /* High-quality PCB/automation related image from Unsplash (circuit board) – approx 150KB WebP equivalent */
+            background-size: cover;
+            background-position: center 30%;
+            padding: 48px 0 44px;
+            color: white;
+            text-align: center;
+            isolation: isolate;
+        }
+        /* dark gradient overlay (semi-transparent) */
+        .quote-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.45) 0%, rgba(0,45,75,0.7) 100%);
+            z-index: -1;
+        }
+        .quote-hero .container {
+            position: relative;
+            z-index: 2;
+        }
+        .quote-hero h1 {
+            font-size: 32px; font-weight: 700; margin-bottom: 8px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .quote-hero p {
+            font-size: 17px; opacity: 0.95; margin: 0;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            font-weight: 400;
+        }
+
+        /* main container – horizontally oriented */
+        .quote-main {
+            padding: 32px 0 48px;
+        }
+
+        /* two-column horizontal layout */
+        .horizontal-quote {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* cards with small border-radius (2-5px) */
+        .card {
+            background: white;
+            border: 1px solid #e9eef2;
+            border-radius: 4px;
+            padding: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .card-header i {
+            font-size: 22px;
+            color: #0071E3;
+            background: #eef6ff;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .card-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            color: #0f172a;
+        }
+
+        /* section heading inside card (B2B friendly) */
+        .section-heading {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 20px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-heading i {
+            color: #0071E3;
+            font-size: 18px;
+            width: 24px;
+        }
+        .section-heading:first-of-type {
+            margin-top: 0;
+        }
+
+        /* template download area */
+        .template-download {
+            background: #f8fafc;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px dashed #cbd5e1;
+        }
+        .template-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .template-info i {
+            font-size: 32px;
+            color: #0071E3;
+        }
+        .template-info span {
+            font-weight: 500;
+            font-size: 14px;
+            color: #1e293b;
+        }
+        .btn-outline-primary {
+            border: 1px solid #0071E3;
+            color: #0071E3;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            background: transparent;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-outline-primary:hover {
+            background: #0071E3;
+            color: white;
+        }
+
+        /* file upload box */
+        .file-upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 4px;
+            padding: 24px 16px;
+            text-align: center;
+            background: #f9fcff;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 20px;
+        }
+        .file-upload-box:hover {
+            border-color: #0071E3;
+            background: #f0f7ff;
+        }
+        .file-upload-box i {
+            font-size: 36px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+        .file-upload-box p { font-size: 14px; margin: 0; color: #475569; }
+        .file-name { font-size: 13px; color: #0071E3; margin-top: 10px; font-weight: 500; }
+
+        /* manual rows container */
+        .manual-rows-container {
+            max-height: 280px;
+            overflow-y: auto;
+            border: 1px solid #e9eef2;
+            border-radius: 4px;
+            padding: 12px;
+            background: #ffffff;
+            margin: 8px 0 10px;
+        }
+        .manual-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .manual-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .manual-row .part-input { flex: 2; min-width: 0; }
+        .manual-row .brand-input { flex: 1.5; }
+        .manual-row .qty-input { flex: 0.8; min-width: 70px; }
+        .manual-row .price-input { flex: 1; min-width: 90px; }
+
+        .delete-btn {
+            background: transparent; border: none; color: #ef4444;
+            font-size: 16px; padding: 6px 8px; border-radius: 4px;
+        }
+        .delete-btn:hover {
+            background: #fee2e2; color: #b91c1c;
+        }
+
+        .add-row-btn {
+            width: 100%;
+            border: 1px dashed #0071E3;
+            background: #f0f7ff;
+            color: #0071E3;
+            border-radius: 4px;
+            padding: 10px;
+            font-weight: 500;
+            margin: 4px 0 16px;
+            transition: 0.2s;
+        }
+        .add-row-btn:hover {
+            background: #0071E3;
+            color: white;
+        }
+
+        /* contact fields */
+        .contact-fields .form-group { margin-bottom: 16px; }
+        .contact-fields label {
+            font-size: 13px; font-weight: 500; color: #334155; margin-bottom: 4px;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .contact-fields label i {
+            font-size: 14px; color: #0071E3; width: 18px;
+        }
+        .form-control, .form-select {
+            border: 1px solid #d1d9e6; border-radius: 4px; padding: 10px 14px;
+            font-size: 14px; background: white;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #0071E3; box-shadow: 0 0 0 3px rgba(0,113,227,0.1);
+        }
+        textarea.form-control { min-height: 90px; resize: vertical; }
+
+        .submit-area {
+            margin-top: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            background: #0071E3; border: none; padding: 12px 32px; border-radius: 4px;
+            font-weight: 600; font-size: 15px; color: white;
+        }
+        .btn-primary:hover { background: #005bb5; }
+        .btn-secondary {
+            background: #e9eef2; color: #334155; border: none; padding: 12px 28px;
+            border-radius: 4px; font-weight: 500;
+        }
+        .btn-secondary:hover { background: #d0dae6; }
+
+        /* Success modal */
+        .success-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s;
+        }
+        .success-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .success-modal-card {
+            background: white;
+            border-radius: 4px;
+            padding: 32px 28px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.2);
+            transform: scale(0.95);
+            transition: transform 0.2s ease;
+        }
+        .show .success-modal-card {
+            transform: scale(1);
+        }
+        .checkmark-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: #16a34a;
+            font-size: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            animation: popCheck 0.3s ease-out;
+        }
+        @keyframes popCheck {
+            0% { transform: scale(0.2); opacity: 0; }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .success-modal-card h4 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        .success-modal-card p {
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 24px;
+        }
+        .ok-btn {
+            background: #0071E3;
+            border: none;
+            color: white;
+            padding: 10px 32px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.15s;
+            width: 100%;
+        }
+        .ok-btn:hover { background: #005bb5; }
+
+        .footer {
+            background: #1e293b; color: white; padding: 20px 0; margin-top: 20px;
+        }
+        .footer-content {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .social-icons a { color: white; margin-left: 16px; border-radius: 4px; }
+        .social-icons a:hover { color: #0071E3; }
+
+        @media (max-width: 992px) {
+            .horizontal-quote { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo">ARC</a>
+            <div class="page-title">Request a Quote</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Products</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero with PCB background + dark gradient overlay, updated text -->
+    <section class="quote-hero">
+        <div class="container">
+            <h1>REQUEST A QUOTE</h1>
+            <p>Get the best pricing for electronic components — Submit your requirement and our team will respond quickly.</p>
+        </div>
+    </section>
+
+    <main class="quote-main">
+        <div class="container">
+            <div class="horizontal-quote">
+                <!-- LEFT CARD: product lines & file upload -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h2>Enter products manually or upload BOM</h2>
+                    </div>
+
+                    <!-- Section: B2B File Upload -->
+                    <div class="section-heading">
+                        <i class="fas fa-file-upload"></i> Bulk upload via Excel (recommended for large BOMs)
+                    </div>
+
+                    <!-- template download (nested under file section) -->
+                    <div class="template-download">
+                        <div class="template-info">
+                            <i class="fas fa-file-excel"></i>
+                            <span>ARC_BOM_Template.xlsx</span>
+                        </div>
+                        <a href="#" class="btn-outline-primary" id="downloadTemplateBtn">
+                            <i class="fas fa-download"></i> Download template
+                        </a>
+                    </div>
+
+                    <!-- file upload area -->
+                    <div class="file-upload-box" id="fileUploadBox">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p><strong>Click to upload</strong> or drag your company BOM (Excel)</p>
+                        <p style="font-size:12px; color:#7e8b9c;">.xlsx or .xls only | Max 10MB</p>
+                        <input type="file" id="quoteFileInput" accept=".xlsx,.xls" style="display: none;">
+                        <div class="file-name" id="quoteFileName"></div>
+                    </div>
+
+                    <!-- Section: Manual Entry -->
+                    <div class="section-heading" style="margin-top: 24px;">
+                        <i class="fas fa-pen-alt"></i> Manual line items (for small quantities or specific parts)
+                    </div>
+
+                    <!-- manual entry rows (first line fixed, no delete) -->
+                    <div id="manualRowsContainer" class="manual-rows-container">
+                        <!-- first row (permanent, no delete) will be injected via js -->
+                    </div>
+
+                    <button class="add-row-btn" id="addManualRowBtn" type="button">
+                        <i class="fas fa-plus-circle"></i> Add another line item
+                    </button>
+
+                    <hr class="my-2">
+                    <div class="small text-secondary mt-1">
+                        <i class="fas fa-info-circle"></i> You can use both options: upload a file AND add manual lines. We'll consolidate your request.
+                    </div>
+                </div>
+
+                <!-- RIGHT CARD: business contact details (B2B focused) -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-address-card"></i>
+                        <h2>Company & contact details</h2>
+                    </div>
+
+                    <!-- subtle heading inside right card -->
+                    <div class="section-heading">
+                        <i class="fas fa-building"></i> Business information
+                    </div>
+
+                    <div class="contact-fields">
+                        <div class="form-group">
+                            <label><i class="far fa-envelope"></i> Official Email *</label>
+                            <input type="email" class="form-control" id="emailInput" placeholder="procurement@yourcompany.com">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-phone-alt"></i> Contact number *</label>
+                            <input type="tel" class="form-control" id="phoneInput" placeholder="+91 98765 43210">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-building"></i> Business name</label>
+                            <input type="text" class="form-control" id="businessInput" placeholder="name">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-map-marker-alt"></i> Delivery location *</label>
+                            <input type="text" class="form-control" id="locationInput" placeholder="City, state, pincode">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="far fa-comment-dots"></i> Purchase notes / special requests</label>
+                            <textarea class="form-control" id="messageInput" placeholder="e.g., urgent requirement, preferred packaging, etc."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="submit-area">
+                        <button class="btn btn-primary" id="submitQuoteBtn"><i class="fas fa-paper-plane"></i> Submit quote request</button>
+                        <button class="btn btn-secondary" id="resetQuoteBtn"><i class="fas fa-redo-alt"></i> Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal Overlay (with check animation and OK button) -->
+    <div class="success-modal-overlay" id="successModalOverlay">
+        <div class="success-modal-card">
+            <div class="checkmark-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h4>Quote sent!</h4>
+            <p>Thank you! Your request has been received. Our team will get back to you soon.</p>
+            <button class="ok-btn" id="modalOkBtn">OK</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>© Amar Radio Corporation | Since 1968 | B2B Industrial Electronics</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function() {
+            // ---------- template download ----------
+            document.getElementById('downloadTemplateBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                const content = `Part Number,Brand,Quantity,Target Price,Description(Optional)\nLM2576T-5.0,Texas Instruments,50,45.00,5V regulator\nATMEGA328P-PU,Microchip,100,80.00,8-bit MCU`;
+                const blob = new Blob([content], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'ARC_Quote_Template.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+                alert('Downloading template: ARC_Quote_Template.csv');
+            });
+
+            // ---------- file upload handling ----------
+            const fileBox = document.getElementById('fileUploadBox');
+            const fileInput = document.getElementById('quoteFileInput');
+            const fileNameSpan = document.getElementById('quoteFileName');
+
+            fileBox.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    fileNameSpan.textContent = `📎 ${e.target.files[0].name}`;
+                } else {
+                    fileNameSpan.textContent = '';
+                }
+            });
+            fileBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                fileBox.style.borderColor = '#0071E3';
+                fileBox.style.background = '#e6f2ff';
+            });
+            fileBox.addEventListener('dragleave', () => {
+                fileBox.style.borderColor = '#cbd5e1';
+                fileBox.style.background = '#f9fcff';
+            });
+            fileBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileBox.style.borderColor = '#cbd5e1';
+                fileBox.style.background = '#f9fcff';
+                if (e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    fileNameSpan.textContent = `📎 ${e.dataTransfer.files[0].name}`;
+                }
+            });
+
+            // ---------- manual rows: first line always visible, no delete ----------
+            const container = document.getElementById('manualRowsContainer');
+
+            function createRow(part = '', brand = '', qty = '', price = '', isFirst = false) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'manual-row';
+
+                const partInp = document.createElement('input');
+                partInp.type = 'text';
+                partInp.className = 'form-control part-input';
+                partInp.placeholder = 'Manufacturer part #';
+                partInp.value = part;
+
+                const brandInp = document.createElement('input');
+                brandInp.type = 'text';
+                brandInp.className = 'form-control brand-input';
+                brandInp.placeholder = 'Brand';
+                brandInp.value = brand;
+
+                const qtyInp = document.createElement('input');
+                qtyInp.type = 'number';
+                qtyInp.className = 'form-control qty-input';
+                qtyInp.placeholder = 'Qty';
+                qtyInp.value = qty;
+                qtyInp.min = '1';
+
+                const priceInp = document.createElement('input');
+                priceInp.type = 'text';
+                priceInp.className = 'form-control price-input';
+                priceInp.placeholder = 'Target price (₹)';
+                priceInp.value = price;
+
+                rowDiv.appendChild(partInp);
+                rowDiv.appendChild(brandInp);
+                rowDiv.appendChild(qtyInp);
+                rowDiv.appendChild(priceInp);
+
+                if (!isFirst) {
+                    const delBtn = document.createElement('button');
+                    delBtn.type = 'button';
+                    delBtn.className = 'delete-btn';
+                    delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    delBtn.addEventListener('click', () => rowDiv.remove());
+                    rowDiv.appendChild(delBtn);
+                }
+                return rowDiv;
+            }
+
+            // initialise: only first row (no delete)
+            container.appendChild(createRow('', '', '', '', true));
+
+            document.getElementById('addManualRowBtn').addEventListener('click', () => {
+                container.appendChild(createRow('', '', '', '', false));
+            });
+
+            function resetManualRows() {
+                container.innerHTML = '';
+                container.appendChild(createRow('', '', '', '', true));
+            }
+
+            function collectManualRows() {
+                const rows = [];
+                const rowElements = container.querySelectorAll('.manual-row');
+                rowElements.forEach(row => {
+                    const part = row.querySelector('.part-input')?.value.trim() || '';
+                    const brand = row.querySelector('.brand-input')?.value.trim() || '';
+                    const qty = row.querySelector('.qty-input')?.value.trim() || '';
+                    const price = row.querySelector('.price-input')?.value.trim() || '';
+                    rows.push({ part, brand, qty, price });
+                });
+                return rows;
+            }
+
+            // Reset all fields (including manual rows, file, contact)
+            function resetAllFormFields() {
+                fileInput.value = '';
+                fileNameSpan.textContent = '';
+                resetManualRows();  // keeps first row empty
+                document.getElementById('emailInput').value = '';
+                document.getElementById('phoneInput').value = '';
+                document.getElementById('businessInput').value = '';
+                document.getElementById('locationInput').value = '';
+                document.getElementById('messageInput').value = '';
+            }
+
+            document.getElementById('resetQuoteBtn').addEventListener('click', () => {
+                resetAllFormFields();
+            });
+
+            // ---------- Success modal logic ----------
+            const modalOverlay = document.getElementById('successModalOverlay');
+            const okBtn = document.getElementById('modalOkBtn');
+
+            function showSuccessModal() {
+                modalOverlay.classList.add('show');
+            }
+
+            function hideSuccessModal() {
+                modalOverlay.classList.remove('show');
+            }
+
+            function autoHideAfterDelay() {
+                setTimeout(() => {
+                    if (modalOverlay.classList.contains('show')) {
+                        hideSuccessModal();
+                    }
+                }, 5000);
+            }
+
+            okBtn.addEventListener('click', () => {
+                hideSuccessModal();
+                resetAllFormFields();   // reset after OK
+            });
+
+            // ---------- submit button (with validation) ----------
+            document.getElementById('submitQuoteBtn').addEventListener('click', () => {
+                const email = document.getElementById('emailInput').value.trim();
+                const phone = document.getElementById('phoneInput').value.trim();
+                const location = document.getElementById('locationInput').value.trim();
+
+                if (!email || !phone || !location) {
+                    alert('Please fill in email, phone, and delivery location (required).');
+                    return;
+                }
+                if (!email.includes('@') || !email.includes('.')) {
+                    alert('Enter a valid email address.');
+                    return;
+                }
+
+                const file = fileInput.files[0];
+                const manualRows = collectManualRows();
+                const hasNonEmptyPart = manualRows.some(r => r.part.trim() !== '');
+
+                if (!file && !hasNonEmptyPart) {
+                    alert('Please upload an Excel file OR enter at least one part number manually.');
+                    return;
+                }
+
+                // Show success modal
+                showSuccessModal();
+                autoHideAfterDelay();
+            });
+
+        })();
+    </script>
+</body>
+</html>
