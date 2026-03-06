@@ -207,7 +207,7 @@
 
         /* manual rows container */
         .manual-rows-container {
-            max-height: 280px;
+            max-height: 400px;
             overflow-y: auto;
             border: 1px solid #e9eef2;
             border-radius: 4px;
@@ -217,24 +217,106 @@
         }
         .manual-row {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
             border-bottom: 1px solid #edf2f7;
+            position: relative;
         }
         .manual-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .manual-row .part-input { flex: 2; min-width: 0; }
-        .manual-row .brand-input { flex: 1.5; }
+        
+        /* Input fields within row */
+        .manual-row .part-input { flex: 2; min-width: 140px; }
+        .manual-row .brand-input { flex: 1.5; min-width: 110px; }
         .manual-row .qty-input { flex: 0.8; min-width: 70px; }
-        .manual-row .price-input { flex: 1; min-width: 90px; }
+        .manual-row .price-input { flex: 1; min-width: 100px; }
+        
+        /* Attachment button styles (matches form inputs) */
+        .attach-btn {
+            background: #ffffff;
+            border: 1px solid #d1d9e6;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: #4f6f8f;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            min-width: 42px;
+            height: 42px;
+        }
+        .attach-btn:hover {
+            background: #e9f0f9;
+            border-color: #a0b8d0;
+        }
+        .attach-btn.file-attached {
+            background: #e1f0ff;
+            border-color: #0071E3;
+            color: #0071E3;
+        }
 
         .delete-btn {
-            background: transparent; border: none; color: #ef4444;
-            font-size: 16px; padding: 6px 8px; border-radius: 4px;
+            background: transparent; 
+            border: 1px solid #d1d9e6;
+            border-radius: 4px;
+            color: #ef4444;
+            font-size: 16px; 
+            padding: 8px 12px;
+            height: 42px;
+            min-width: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.15s;
         }
         .delete-btn:hover {
-            background: #fee2e2; color: #b91c1c;
+            background: #fee2e2; 
+            color: #b91c1c;
+            border-color: #f5b1b1;
+        }
+
+        /* Hidden file input */
+        .file-input-hidden {
+            display: none;
+        }
+
+        /* Filename display below row */
+        .file-info {
+            flex-basis: 100%;
+            font-size: 0.85rem;
+            background: #f2f8ff;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            color: #1f4975;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid #c7dcf2;
+            margin-top: 8px;
+            width: fit-content;
+            max-width: 100%;
+        }
+        .file-info i {
+            color: #0071E3;
+            font-size: 0.9rem;
+        }
+        .file-info .remove-file-tag {
+            margin-left: auto;
+            background: transparent;
+            border: none;
+            color: #6d8bb0;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0 8px;
+            border-radius: 30px;
+        }
+        .file-info .remove-file-tag:hover {
+            color: #c00;
+            background: #ffe6e6;
         }
 
         .add-row-btn {
@@ -439,7 +521,9 @@
                     <div class="section-heading" style="margin-top: 24px;">
                         <i class="fas fa-pen-alt"></i> Manual line items (for small quantities or specific parts)
                     </div>
-
+                     <div class="small text-secondary mt-1">
+                        <i class="fas fa-info-circle"></i> Along with the part number, you may attach a product image or datasheet. Our team will review and assist in identifying the correct component.
+                    </div>
                     <!-- manual entry rows (first line fixed, no delete) -->
                     <div id="manualRowsContainer" class="manual-rows-container">
                         <!-- first row (permanent, no delete) will be injected via js -->
@@ -574,25 +658,28 @@
                 }
             });
 
-            // ---------- manual rows: first line always visible, no delete ----------
+            // ---------- manual rows with file attachment feature ----------
             const container = document.getElementById('manualRowsContainer');
 
             function createRow(part = '', brand = '', qty = '', price = '', isFirst = false) {
                 const rowDiv = document.createElement('div');
                 rowDiv.className = 'manual-row';
 
+                // Part input
                 const partInp = document.createElement('input');
                 partInp.type = 'text';
                 partInp.className = 'form-control part-input';
                 partInp.placeholder = 'Manufacturer part #';
                 partInp.value = part;
 
+                // Brand input
                 const brandInp = document.createElement('input');
                 brandInp.type = 'text';
                 brandInp.className = 'form-control brand-input';
                 brandInp.placeholder = 'Brand';
                 brandInp.value = brand;
 
+                // Qty input
                 const qtyInp = document.createElement('input');
                 qtyInp.type = 'number';
                 qtyInp.className = 'form-control qty-input';
@@ -600,17 +687,39 @@
                 qtyInp.value = qty;
                 qtyInp.min = '1';
 
+                // Price input
                 const priceInp = document.createElement('input');
                 priceInp.type = 'text';
                 priceInp.className = 'form-control price-input';
                 priceInp.placeholder = 'Target price (₹)';
                 priceInp.value = price;
 
+                // Attachment button (paperclip)
+                const attachBtn = document.createElement('button');
+                attachBtn.type = 'button';
+                attachBtn.className = 'attach-btn';
+                attachBtn.innerHTML = '<i class="fas fa-paperclip"></i>';
+                attachBtn.setAttribute('title', 'Attach PDF or image');
+
+                // Hidden file input
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.className = 'file-input-hidden';
+                fileInput.accept = '.pdf,image/*';  // PDF and images
+
+                // Filename display div (initially hidden)
+                const fileInfoDiv = document.createElement('div');
+                fileInfoDiv.className = 'file-info';
+                fileInfoDiv.style.display = 'none';
+
+                // Add all elements to row
                 rowDiv.appendChild(partInp);
                 rowDiv.appendChild(brandInp);
                 rowDiv.appendChild(qtyInp);
                 rowDiv.appendChild(priceInp);
-
+                rowDiv.appendChild(attachBtn);
+                
+                // Delete button (if not first row)
                 if (!isFirst) {
                     const delBtn = document.createElement('button');
                     delBtn.type = 'button';
@@ -618,40 +727,112 @@
                     delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
                     delBtn.addEventListener('click', () => rowDiv.remove());
                     rowDiv.appendChild(delBtn);
+                } else {
+                    // For first row, add an invisible placeholder to maintain layout
+                    const placeholderBtn = document.createElement('button');
+                    placeholderBtn.type = 'button';
+                    placeholderBtn.className = 'delete-btn';
+                    placeholderBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    placeholderBtn.style.visibility = 'hidden';
+                    placeholderBtn.disabled = true;
+                    rowDiv.appendChild(placeholderBtn);
                 }
+
+                // Append hidden file input and file info div (they will wrap to next line)
+                rowDiv.appendChild(fileInput);
+                rowDiv.appendChild(fileInfoDiv);
+
+                // --- Attachment button click: trigger hidden file input ---
+                attachBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    fileInput.click();
+                });
+
+                // --- When file selected ---
+                fileInput.addEventListener('change', function() {
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+                        // Change button to "attached" state (blue)
+                        attachBtn.classList.add('file-attached');
+                        
+                        // Build filename display
+                        let fileName = file.name;
+                        const fileSize = (file.size / 1024).toFixed(1);
+                        
+                        fileInfoDiv.style.display = 'inline-flex';
+                        fileInfoDiv.innerHTML = `
+                            <i class="fas fa-paperclip" style="color:#0071E3;"></i>
+                            <span><strong>${fileName}</strong> (${fileSize} KB)</span>
+                            <button class="remove-file-tag" title="Remove attachment"><i class="fas fa-times-circle"></i></button>
+                        `;
+
+                        // Add event to remove button
+                        const removeBtn = fileInfoDiv.querySelector('.remove-file-tag');
+                        removeBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            fileInput.value = ''; 
+                            attachBtn.classList.remove('file-attached');
+                            fileInfoDiv.style.display = 'none';
+                            fileInfoDiv.innerHTML = '';
+                        });
+                    } else {
+                        attachBtn.classList.remove('file-attached');
+                        fileInfoDiv.style.display = 'none';
+                        fileInfoDiv.innerHTML = '';
+                    }
+                });
+
                 return rowDiv;
             }
 
-            // initialise: only first row (no delete)
+            // Initialise with first row (no delete)
             container.appendChild(createRow('', '', '', '', true));
 
+            // Add row button
             document.getElementById('addManualRowBtn').addEventListener('click', () => {
                 container.appendChild(createRow('', '', '', '', false));
             });
 
+            // Reset manual rows to just first empty row
             function resetManualRows() {
                 container.innerHTML = '';
                 container.appendChild(createRow('', '', '', '', true));
             }
 
+            // Updated collectManualRows function that captures File objects
             function collectManualRows() {
                 const rows = [];
                 const rowElements = container.querySelectorAll('.manual-row');
-                rowElements.forEach(row => {
+                rowElements.forEach((row, index) => {
                     const part = row.querySelector('.part-input')?.value.trim() || '';
                     const brand = row.querySelector('.brand-input')?.value.trim() || '';
                     const qty = row.querySelector('.qty-input')?.value.trim() || '';
                     const price = row.querySelector('.price-input')?.value.trim() || '';
-                    rows.push({ part, brand, qty, price });
+                    
+                    // Get file from hidden input
+                    const fileInput = row.querySelector('.file-input-hidden');
+                    let attachedFile = null;
+                    if (fileInput && fileInput.files.length > 0) {
+                        attachedFile = fileInput.files[0];
+                    }
+
+                    rows.push({ 
+                        part, 
+                        brand, 
+                        qty, 
+                        price,
+                        attachedFile,
+                        fileName: attachedFile ? attachedFile.name : null
+                    });
                 });
                 return rows;
             }
 
-            // Reset all fields (including manual rows, file, contact)
+            // Reset all fields
             function resetAllFormFields() {
                 fileInput.value = '';
                 fileNameSpan.textContent = '';
-                resetManualRows();  // keeps first row empty
+                resetManualRows();
                 document.getElementById('emailInput').value = '';
                 document.getElementById('phoneInput').value = '';
                 document.getElementById('businessInput').value = '';
@@ -685,10 +866,10 @@
 
             okBtn.addEventListener('click', () => {
                 hideSuccessModal();
-                resetAllFormFields();   // reset after OK
+                resetAllFormFields();
             });
 
-            // ---------- submit button (with validation) ----------
+            // ---------- submit button with validation and file logging ----------
             document.getElementById('submitQuoteBtn').addEventListener('click', () => {
                 const email = document.getElementById('emailInput').value.trim();
                 const phone = document.getElementById('phoneInput').value.trim();
@@ -703,14 +884,28 @@
                     return;
                 }
 
-                const file = fileInput.files[0];
+                const bomFile = fileInput.files[0];
                 const manualRows = collectManualRows();
-                const hasNonEmptyPart = manualRows.some(r => r.part.trim() !== '');
+                const hasNonEmptyPart = manualRows.some(r => r.part !== '');
 
-                if (!file && !hasNonEmptyPart) {
+                if (!bomFile && !hasNonEmptyPart) {
                     alert('Please upload an Excel file OR enter at least one part number manually.');
                     return;
                 }
+
+                // Log all data including files (for demo)
+                console.log('========== RFQ SUBMISSION ==========');
+                console.log('BOM File:', bomFile ? bomFile.name : 'None');
+                console.log('Manual Rows:', manualRows.length);
+                manualRows.forEach((row, idx) => {
+                    console.log(`Row ${idx+1}: Part ${row.part}, Brand ${row.brand}, Qty ${row.qty}, Price ${row.price}`);
+                    if (row.attachedFile) {
+                        console.log(`   📎 File attached: "${row.attachedFile.name}" (${row.attachedFile.type}, ${row.attachedFile.size} bytes)`);
+                    } else {
+                        console.log(`   📎 No file`);
+                    }
+                });
+                console.log('=====================================');
 
                 // Show success modal
                 showSuccessModal();
